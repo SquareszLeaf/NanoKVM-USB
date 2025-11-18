@@ -36,6 +36,7 @@ const nl = {
         }
       },
       keyboard: {
+        gameMode: 'Game Mode',
         paste: 'Plakken',
         virtualKeyboard: 'Virtueel toetsenbord',
         shortcuts: 'Sneltoetsen',

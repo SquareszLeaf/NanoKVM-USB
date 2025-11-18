@@ -36,6 +36,7 @@ const en = {
       }
     },
     keyboard: {
+      gameMode: 'Game Mode',
       paste: 'Paste',
       virtualKeyboard: 'Keyboard',
       shortcuts: 'Shortcuts',

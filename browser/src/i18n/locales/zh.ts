@@ -34,6 +34,7 @@ const zh = {
       }
     },
     keyboard: {
+      gameMode: 'Game Mode',
       paste: '粘贴',
       virtualKeyboard: '虚拟键盘',
       shortcuts: '快捷键',

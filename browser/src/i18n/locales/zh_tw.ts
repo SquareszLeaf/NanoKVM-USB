@@ -33,6 +33,7 @@ const zh_tw = {
       }
     },
     keyboard: {
+      gameMode: 'Game Mode',
       paste: '貼上',
       virtualKeyboard: '虛擬鍵盤',
       ctrlAltDel: 'Ctrl + Alt + Delete'

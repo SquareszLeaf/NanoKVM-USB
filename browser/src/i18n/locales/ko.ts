@@ -36,6 +36,7 @@ const ko = {
       }
     },
     keyboard: {
+      gameMode: 'Game Mode',
       paste: '붙여넣기',
       virtualKeyboard: '가상 키보드',
       ctrlAltDel: 'Ctrl + Alt + Delete'

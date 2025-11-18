@@ -35,6 +35,7 @@ const pl = {
       }
     },
     keyboard: {
+      gameMode: 'Game Mode',
       paste: 'Wklej',
       virtualKeyboard: 'Klawiatura',
       ctrlAltDel: 'Ctrl + Alt + Delete'

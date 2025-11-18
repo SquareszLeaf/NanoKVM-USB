@@ -36,6 +36,7 @@ const ru = {
       }
     },
     keyboard: {
+      gameMode: 'Game Mode',
       paste: 'Вставить текст',
       virtualKeyboard: 'Виртуальная клавиатура',
       shortcuts: 'Сочетания клавиш',

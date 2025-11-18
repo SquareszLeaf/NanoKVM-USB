@@ -1,14 +1,20 @@
 import { useEffect, useRef } from 'react';
+import { useAtomValue } from 'jotai';
 
+import { isGameModeAtom } from '@/jotai/keyboard.ts';
 import { device } from '@/libs/device';
 import { Modifiers } from '@/libs/device/keyboard.ts';
 import { KeyboardCodes } from '@/libs/keyboard';
 
 export const Keyboard = () => {
-  const controlKeys = new Set(['Control', 'Shift', 'Alt', 'Meta']);
+  const controlKeys = new Set(['Control', 'Shift', 'Alt', 'AltGraph', 'Meta']);
+
+  const isGameModeEnabled = useAtomValue(isGameModeAtom);
 
   const lastKeyRef = useRef<KeyboardEvent>();
   const pressedKeysRef = useRef<Set<string>>(new Set());
+  const activeKeysRef = useRef<string[]>([]);
+  const altGraphActiveRef = useRef(false);
 
   // listen keyboard events
   useEffect(() => {
@@ -18,8 +24,44 @@ export const Keyboard = () => {
     return () => {
       window.removeEventListener('keydown', handleKeyDown);
       window.removeEventListener('keyup', handleKeyUp);
+      resetGameModeState();
+      void sendKeyUp();
     };
   }, []);
+
+  useEffect(() => {
+    function handleWindowBlur() {
+      if (
+        activeKeysRef.current.length === 0 &&
+        pressedKeysRef.current.size === 0 &&
+        !altGraphActiveRef.current
+      ) {
+        return;
+      }
+
+      resetGameModeState();
+      void sendKeyUp();
+    }
+
+    window.addEventListener('blur', handleWindowBlur);
+
+    return () => {
+      window.removeEventListener('blur', handleWindowBlur);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (
+      activeKeysRef.current.length === 0 &&
+      pressedKeysRef.current.size === 0 &&
+      !altGraphActiveRef.current
+    ) {
+      return;
+    }
+
+    resetGameModeState();
+    void sendKeyUp();
+  }, [isGameModeEnabled]);
 
   // press button
   async function handleKeyDown(event: KeyboardEvent) {
@@ -30,6 +72,30 @@ export const Keyboard = () => {
 
     if (controlKeys.has(event.key)) {
       pressedKeysRef.current.add(event.code);
+      if (event.key === 'AltGraph' || event.code === 'AltRight') {
+        altGraphActiveRef.current = event.getModifierState('AltGraph');
+      }
+
+      if (isGameModeEnabled) {
+        await sendGameModeReport();
+      }
+      return;
+    }
+
+    if (isGameModeEnabled) {
+      if (event.repeat && activeKeysRef.current.includes(event.code)) {
+        return;
+      }
+
+      if (!KeyboardCodes.has(event.code)) {
+        return;
+      }
+
+      if (!activeKeysRef.current.includes(event.code)) {
+        activeKeysRef.current.push(event.code);
+      }
+
+      await sendGameModeReport();
       return;
     }
 
@@ -41,11 +107,33 @@ export const Keyboard = () => {
     event.preventDefault();
     event.stopPropagation();
 
-    if (controlKeys.has(event.key) && lastKeyRef.current?.code === event.code) {
-      await sendKeyDown(lastKeyRef.current);
+    if (controlKeys.has(event.key)) {
+      pressedKeysRef.current.delete(event.code);
+      if (event.key === 'AltGraph' || event.code === 'AltRight') {
+        altGraphActiveRef.current = false;
+      }
 
-      lastKeyRef.current = undefined;
-      pressedKeysRef.current.clear();
+      if (isGameModeEnabled) {
+        await sendGameModeReport();
+        return;
+      }
+
+      if (lastKeyRef.current?.code === event.code) {
+        await sendKeyDown(lastKeyRef.current);
+        lastKeyRef.current = undefined;
+      }
+
+      await sendKeyUp();
+      return;
+    }
+
+    if (isGameModeEnabled) {
+      const index = activeKeysRef.current.indexOf(event.code);
+      if (index !== -1) {
+        activeKeysRef.current.splice(index, 1);
+      }
+      await sendGameModeReport();
+      return;
     }
 
     await sendKeyUp();
@@ -59,6 +147,53 @@ export const Keyboard = () => {
     const keys = [0x00, 0x00, code, 0x00, 0x00, 0x00];
 
     await device.sendKeyboardData(ctrl, keys);
+  }
+
+  async function sendGameModeReport() {
+    const modifiers = getGameModeModifiers();
+    const keys = buildGameModeKeys();
+    await device.sendKeyboardData(modifiers, keys);
+  }
+
+  function buildGameModeKeys() {
+    const keys = [0x00, 0x00, 0x00, 0x00, 0x00, 0x00];
+    let index = 0;
+
+    for (const keyCode of activeKeysRef.current) {
+      if (index >= keys.length) {
+        break;
+      }
+
+      const hidCode = KeyboardCodes.get(keyCode);
+      if (!hidCode) {
+        continue;
+      }
+
+      keys[index] = hidCode;
+      index += 1;
+    }
+
+    return keys;
+  }
+
+  function getGameModeModifiers() {
+    const modifiers = new Modifiers();
+
+    modifiers.leftCtrl = pressedKeysRef.current.has('ControlLeft') || altGraphActiveRef.current;
+    modifiers.rightCtrl = pressedKeysRef.current.has('ControlRight');
+    modifiers.leftShift = pressedKeysRef.current.has('ShiftLeft');
+    modifiers.rightShift = pressedKeysRef.current.has('ShiftRight');
+    modifiers.leftAlt = pressedKeysRef.current.has('AltLeft');
+    modifiers.rightAlt = pressedKeysRef.current.has('AltRight');
+    modifiers.leftWindows = pressedKeysRef.current.has('MetaLeft');
+    modifiers.rightWindows = pressedKeysRef.current.has('MetaRight');
+
+    if (altGraphActiveRef.current) {
+      modifiers.leftCtrl = true;
+      modifiers.rightAlt = true;
+    }
+
+    return modifiers;
   }
 
   async function sendKeyUp() {
@@ -92,6 +227,13 @@ export const Keyboard = () => {
     }
 
     return modifiers;
+  }
+
+  function resetGameModeState() {
+    activeKeysRef.current = [];
+    pressedKeysRef.current.clear();
+    altGraphActiveRef.current = false;
+    lastKeyRef.current = undefined;
   }
 
   return <></>;

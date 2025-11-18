@@ -35,6 +35,7 @@ const pt_br = {
       }
     },
     keyboard: {
+      gameMode: 'Game Mode',
       paste: 'Colar',
       virtualKeyboard: 'Teclado Virtual',
       ctrlAltDel: 'Ctrl + Alt + Delete'

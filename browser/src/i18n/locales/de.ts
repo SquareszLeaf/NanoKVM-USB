@@ -36,6 +36,7 @@ const de = {
         }
       },
       keyboard: {
+        gameMode: 'Game Mode',
         paste: 'Einfügen',
         virtualKeyboard: 'Virtuelle Tastatur',
         shortcuts: 'Tastenkürzel',

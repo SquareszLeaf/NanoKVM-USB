@@ -11,6 +11,7 @@ const MOUSE_MODE_KEY = 'nanokvm-usb-mouse-mode';
 const MOUSE_SCROLL_DIRECTION_KEY = 'nanokvm-usb-mouse-scroll-direction';
 const MOUSE_SCROLL_INTERVAL_KEY = 'nanokvm-usb-mouse-scroll-interval';
 const MOUSE_JIGGLER_MODE_KEY = 'nanokvm-usb-mouse-jiggler-mode';
+const KEYBOARD_GAME_MODE_KEY = 'nanokvm-usb-game-mode';
 
 export function getLanguage() {
   return localStorage.getItem(LANGUAGE_KEY);
@@ -129,4 +130,13 @@ export function getMouseJigglerMode(): string {
 
 export function setMouseJigglerMode(jiggler: string): void {
   localStorage.setItem(MOUSE_JIGGLER_MODE_KEY, jiggler);
+}
+
+export function getKeyboardGameMode(): 'enable' | 'disable' {
+  const mode = localStorage.getItem(KEYBOARD_GAME_MODE_KEY);
+  return mode === 'enable' ? 'enable' : 'disable';
+}
+
+export function setKeyboardGameMode(mode: 'enable' | 'disable'): void {
+  localStorage.setItem(KEYBOARD_GAME_MODE_KEY, mode);
 }

@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Popover } from 'antd';
 import { KeyboardIcon } from 'lucide-react';
 
+import { GameMode } from './game-mode.tsx';
 import { Paste } from './paste.tsx';
 import { VirtualKeyboard } from './virtual-keyboard.tsx';
 import { KeyboardShortcutsMenu } from './shortcuts-menu.tsx';
@@ -11,6 +12,7 @@ export const Keyboard = () => {
 
   const content = (
     <>
+      <GameMode />
       <Paste />
       <VirtualKeyboard />
       <KeyboardShortcutsMenu />
