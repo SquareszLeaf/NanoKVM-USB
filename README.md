@@ -20,7 +20,7 @@ We offer one version of the application: [Browser](https://github.com/SquareszLe
 
 ### Browser Version
 
-Access our online service at [usbkvm.sipeed.com](https://usbkvm.sipeed.com).
+Access our online service at https://squareszleaf.github.io/.
 
 For self-deployment, download the `NanoKVM-USB-xxx-browser.zip` and serve it. Refer to the [Deployment Guide](https://wiki.sipeed.com/hardware/en/kvm/NanoKVM_USB/development.html) for details.
 
