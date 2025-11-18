@@ -11,6 +11,7 @@ NanoKVM-USB captures HDMI video signals and transmits them to the host via USB 3
 - Toggle **Game Mode** from the keyboard menu (menu bar → keyboard icon → Game Mode switch).
 - When enabled, the frontend rewrites outbound keyboard reports so gaming combos such as `W + Space` or `W + Ctrl` keep movement keys held even with limited hardware rollover.
 - Game Mode defaults to **off**; enable it only when you need those improved combos as it has not been fully tested.
+- A preview demonstrating why this is beneficial will be posted soon!
 <img width="293" height="197" alt="scweenshot" src="https://github.com/user-attachments/assets/b60d482a-a027-41b4-bfc9-7036ad135b60" />
 
 
