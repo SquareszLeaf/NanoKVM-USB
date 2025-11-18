@@ -15,6 +15,7 @@ export const Keyboard = () => {
   const pressedKeysRef = useRef<Set<string>>(new Set());
   const activeKeysRef = useRef<string[]>([]);
   const altGraphActiveRef = useRef(false);
+  const isGameModeRef = useRef(isGameModeEnabled);
 
   // listen keyboard events
   useEffect(() => {
@@ -51,6 +52,8 @@ export const Keyboard = () => {
   }, []);
 
   useEffect(() => {
+    isGameModeRef.current = isGameModeEnabled;
+
     if (
       activeKeysRef.current.length === 0 &&
       pressedKeysRef.current.size === 0 &&
@@ -82,7 +85,7 @@ export const Keyboard = () => {
       return;
     }
 
-    if (isGameModeEnabled) {
+    if (isGameModeRef.current) {
       if (event.repeat && activeKeysRef.current.includes(event.code)) {
         return;
       }
@@ -113,7 +116,7 @@ export const Keyboard = () => {
         altGraphActiveRef.current = false;
       }
 
-      if (isGameModeEnabled) {
+      if (isGameModeRef.current) {
         await sendGameModeReport();
         return;
       }
@@ -127,7 +130,7 @@ export const Keyboard = () => {
       return;
     }
 
-    if (isGameModeEnabled) {
+    if (isGameModeRef.current) {
       const index = activeKeysRef.current.indexOf(event.code);
       if (index !== -1) {
         activeKeysRef.current.splice(index, 1);
