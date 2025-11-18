@@ -1,4 +1,4 @@
-# NanoKVM-USB
+# Modified NanoKVM-USB
 
 ## Introduction
 
@@ -6,7 +6,7 @@ The NanoKVM-USB is a convenient tool for operations and multi-device collaborati
 
 NanoKVM-USB captures HDMI video signals and transmits them to the host via USB 3.0. Unlike typical USB capture cards, NanoKVM-USB also captures keyboard and mouse input from the host and sends it to the target machine in real-time, eliminating the need for traditional screen and peripheral connections. It also supports HDMI loop-out, with a maximum resolution of 4K@30Hz, making it easy to connect to a large display.
 
-## Game Mode
+## New Feature: Game Mode
 
 - Toggle **Game Mode** from the keyboard menu (menu bar → keyboard icon → Game Mode switch).
 - When enabled, the frontend rewrites outbound keyboard reports so gaming combos such as `W + Space` or `W + Ctrl` keep movement keys held even with limited hardware rollover.
